@@ -48,14 +48,15 @@ export default function Home() {
   const handleLogin = () => {
     const mahasiswa = dataMhs.find(mhs => mhs.nim === emailInput);
     const userLogin = dataLogin.find(login => login.role === 'mahasiswa' && login.password === passwordInput);
+    const adminLogin = dataLogin.find(login => login.role === 'dosen' && login.password === passwordInput);
 
     if (mahasiswa && userLogin) {
       setCurrentUserId(mahasiswa.id);
       alert("Login berhasil");
       router.push(`/mahasiswa/${mahasiswa.id}`); 
-    } else if (emailInput === "admin@gmail.com" && passwordInput === passSekretaris) {
+    } else if (emailInput === "admin@gmail.com" && adminLogin) {
       alert("Halo admin!");
-      router.push('/dosen/dataMahasiswa');
+      router.push('/dosen/');
     } else if (emailInput === "" || passwordInput === "") {
       alert("Harap mengisi email dan password");
     } else {

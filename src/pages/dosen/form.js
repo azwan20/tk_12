@@ -91,7 +91,7 @@ export default function Form() {
                                         <p>Nomor Induk Mahasiswa</p>
                                         <input type="text" value={nim} />
                                         <p>Nilai</p>
-                                        <input type="number" onChange={(e) => setnilai(e.target.value)} />
+                                        <input type="text" onChange={(e) => setnilai(e.target.value)} />
                                     </section>
                                 </span>
                                 <span>
