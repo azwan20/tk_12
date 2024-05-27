@@ -31,7 +31,7 @@ export default function Form() {
     //identitas
     const [nama_lengkap, setNama_lengkap] = useState("");
     const [nim, setnim] = useState("");
-    const [fakultas, setfakultas] = useState("FAKULTAS ILMU KOMPUTER");
+    const [fakultas, setfakultas] = useState("Ilmu Komputer");
     const [jurusan, setjurusan] = useState("");
     const [matkul, setmatkul] = useState("");
     const [sks, setsks] = useState("");
@@ -45,7 +45,7 @@ export default function Form() {
         if (added) {
             setNama_lengkap("");
             setnim("");
-            setfakultas("FAKULTAS ILMU KOMPUTER");
+            setfakultas("Ilmu Komputer");
             setjurusan("");
             setmatkul("");
             setsks("");
@@ -77,7 +77,7 @@ export default function Form() {
                                         <p>Nomor Induk Mahasiswa</p>
                                         <input type="text" onChange={(e) => setnim(e.target.value)} />
                                         <p>Fakultas</p>
-                                        <input type="text" value={"FAKULTAS ILMU KOMPUTER"} onChange={(e) => setfakultas("FAKULTAS ILMU KOMPUTER")} readOnly />
+                                        <input type="text" value={"Ilmu Komputer"} onChange={(e) => setfakultas("Ilmu Komputer")} readOnly />
                                         <p>Jurusan</p>
                                         <select onChange={(e) => setjurusan(e.target.value)}>
                                             <option>Pilih</option>
