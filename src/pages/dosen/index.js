@@ -16,10 +16,8 @@ async function fetchDataFromFirestore() {
 
 export default function DataSiswa() {
     const router = useRouter();
-    const { id } = router.query;
     const [dataMahasiswa, setDataMahasiswa] = useState([]);
-    const [dataSurat, setDataSurat] = useState([]);
-    const [selectedNama, setSelectedNama] = useState('');
+    const [selectedId, setSelectedId] = useState('');
     const [isEditMode, setIsEditMode] = useState(false);
     const [formData, setFormData] = useState({});
 
@@ -31,12 +29,12 @@ export default function DataSiswa() {
         fetchData();
     }, []);
 
-    const selectedItem = dataMahasiswa.find(item => item.nama_lengkap === selectedNama);
+    const selectedItem = dataMahasiswa.find(item => item.id === selectedId);
 
     const handleNamaChange = (event) => {
-        const selectedName = event.target.value;
-        setSelectedNama(selectedName);
-        const selectedItem = dataMahasiswa.find(item => item.nama_lengkap === selectedName);
+        const selectedId = event.target.value;
+        setSelectedId(selectedId);
+        const selectedItem = dataMahasiswa.find(item => item.id === selectedId);
         setFormData(selectedItem || {});
     };
 
@@ -71,7 +69,7 @@ export default function DataSiswa() {
             setIsEditMode(false);
             const updatedData = await fetchDataFromFirestore();
             setDataMahasiswa(updatedData);
-            setSelectedNama('');
+            setSelectedId('');
             setFormData({});
             alert("Data berhasil di Hapus");
         }
@@ -80,7 +78,6 @@ export default function DataSiswa() {
     const handleBatal = () => {
         setIsEditMode(false);
     }
-
 
     const handleDetailTransaksi = (id) => {
         router.push(`/print/${id}`);
@@ -105,28 +102,25 @@ export default function DataSiswa() {
         })
     };
 
-
-
     return (
         <>
             <div className="home">
                 <Navbar />
                 <div className="halLog">
                     <div className="dataSiswa">
-                    <h2 className="text-center mb-3">HALAMAN DOSEN</h2>
+                        <h2 className="text-center mb-3">HALAMAN DOSEN</h2>
                         <section className="navbar align-items-center">
                             <select
                                 style={{ width: '20%', margin: 'auto', border: '3px solid #A1DD70' }}
-                                value={selectedNama}
+                                value={selectedId}
                                 onChange={handleNamaChange}
                                 className="px-1"
                             >
                                 <option value="">Pilih Nama</option>
-                                {dataMahasiswa.map((item, index) => (
-                                    <option key={index} value={item.nama_lengkap}>{item.nama_lengkap}</option>
+                                {dataMahasiswa.map((item) => (
+                                    <option key={item.id} value={item.id}>{item.nama_lengkap}</option>
                                 ))}
                             </select>
-
                         </section>
                         <hr />
                         {selectedItem ? (

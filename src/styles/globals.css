@@ -134,6 +134,11 @@ nav a {
   color: #fff;
 }
 
+.dataSiswa .detailMhs p, .detailMhs b{
+  font-size: 18px;
+  text-transform: uppercase;
+}
+
 @media print {
   .template {
     margin: 0;

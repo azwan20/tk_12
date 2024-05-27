@@ -1,59 +1,40 @@
 import Navbar from "./navbar";
 import { db } from "../../../public/firebaseConfig";
-import { getDocs, collection, updateDoc, deleteDoc, doc, getDoc } from "firebase/firestore";
+import { getDocs, collection, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
 
-async function fetchData_ModelTransaksi(id) {
-    const docRef = doc(db, "mahasiswa", id);
-    const docSnapshot = await getDoc(docRef);
-
-    if (docSnapshot.exists()) {
-        const data = { id: docSnapshot.id, ...docSnapshot.data() };
-        return [data];
-    } else {
-        // Handle case where the document doesn't exist
-        return [];
-    }
+async function fetchDataByNim(nim) {
+    const q = query(collection(db, "mahasiswa"), where("nim", "==", nim));
+    const querySnapshot = await getDocs(q);
+    const data = [];
+    querySnapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+    });
+    return data;
 }
 
 export default function DataMahasiswa() {
     const router = useRouter();
-    const { id } = router.query;
+    const { id } = router.query; // The NIM from the URL
     const [dataMahasiswa, setDataMahasiswa] = useState([]);
-    const [selectedNama, setSelectedNama] = useState('');
-    const [formData, setFormData] = useState({});
 
     useEffect(() => {
         async function fetchData() {
             if (id) {
-                const data = await fetchData_ModelTransaksi(id);
+                const data = await fetchDataByNim(id);
                 setDataMahasiswa(data);
             }
         }
         fetchData();
     }, [id]);
 
-    console.log("dataMahasiswa",dataMahasiswa);
+    if (!dataMahasiswa.length) {
+        return <p>Loading...</p>;
+    }
 
-
-    // Filter data mahasiswa berdasarkan userId
-    // const filteredData = dataMahasiswa.filter(mahasiswa => mahasiswa.id === currentUserId);
-
-    // const selectedItem = filteredData.length > 0 ? filteredData.find(item => item.nama_lengkap === selectedNama) : null;
-
-    // const handleNamaChange = (event) => {
-    //     const selectedName = event.target.value;
-    //     setSelectedNama(selectedName);
-    //     const selectedItem = filteredData.find(item => item.nama_lengkap === selectedName);
-    //     setFormData(selectedItem || {});
-    // };
-
-    // console.log("damhs", dataMahasiswa.map((item) => item.nama_lengkap));
-    // console.log("damhs", filteredData.map((item) => item.nama_lengkap));
-
-
+    // Assuming all other details like name, faculty, etc. are same for each document with the same NIM
+    const { nama_lengkap, nim, fakultas, jurusan } = dataMahasiswa[0];
 
     return (
         <>
@@ -62,61 +43,52 @@ export default function DataMahasiswa() {
                 <div className="halLog">
                     <div className="dataSiswa">
                         <h2 className="text-center mb-3">MAHASISWA</h2>
-                        {/* <section className="navbar align-items-center">
-                            <select
-                                style={{ width: '20%', margin: 'auto', border: '3px solid #A1DD70' }}
-                                value={selectedNama}
-                                onChange={handleNamaChange}
-                                className="px-1"
-                            >
-                                <option value="">Pilih Nama</option>
-                                {dataMahasiswa.map((item, index) => (
-                                    <option key={index} value={item.nama_lengkap}>{item.nama_lengkap}</option>
-                                ))}
-                            </select>
-
-                        </section> */}
                         <hr />
+                        <h5>IDENTITAS</h5>
+                        <section className="d-flex detailMhs flex-column">
+                            <section className="d-flex mb-2">
+                                <span style={{ width: '30%' }} className="d-flex align-items-center">
+                                    <p>Nama Lengkap</p>
+                                </span>
+                                <span style={{ width: '70%' }}>
+                                    <b>{nama_lengkap || ''}</b>
+                                </span>
+                            </section>
+                            <section className="d-flex mb-2">
+                                <span style={{ width: '30%' }} className="d-flex align-items-center">
+                                    <p>Nomor Induk Mahasiswa</p>
+                                </span>
+                                <span style={{ width: '70%' }}>
+                                    <b>{nim || ''}</b>
+                                </span>
+                            </section>
+                            <section className="d-flex mb-2">
+                                <span style={{ width: '30%' }} className="d-flex align-items-center">
+                                    <p>Fakultas</p>
+                                </span>
+                                <span style={{ width: '70%' }}>
+                                    <b>{fakultas || ''}</b>
+                                </span>
+                            </section>
+                            <section className="d-flex mb-2">
+                                <span style={{ width: '30%' }} className="d-flex align-items-center">
+                                    <p>Jurusan</p>
+                                </span>
+                                <span style={{ width: '70%' }}>
+                                    <b>{jurusan || ''}</b>
+                                </span>
+                            </section>
+                        </section>
+                        <hr />
+                        <h5 className="text-uppercase mt-5">Daftar Nilai :</h5>
                         {dataMahasiswa.map((item, index) => (
-                            <section key={index} className="d-flex flex-column">
-                                <section className="d-flex mb-2">
-                                    <span style={{ width: '30%' }} className="d-flex align-items-center">
-                                        <p>Nama Lengkap</p>
-                                    </span>
-                                    <span style={{ width: '70%' }}>
-                                        <b>{item.nama_lengkap || ''}</b>
-                                    </span>
-                                </section>
-                                <section className="d-flex mb-2">
-                                    <span style={{ width: '30%' }} className="d-flex align-items-center">
-                                        <p>Nomor Induk Mahasiswa</p>
-                                    </span>
-                                    <span style={{ width: '70%' }}>
-                                        <b>{item.nim || ''}</b>
-                                    </span>
-                                </section>
-                                <section className="d-flex mb-2">
-                                    <span style={{ width: '30%' }} className="d-flex align-items-center">
-                                        <p>Fakultas</p>
-                                    </span>
-                                    <span style={{ width: '70%' }}>
-                                        <b>{item.fakultas || ''}</b>
-                                    </span>
-                                </section>
-                                <section className="d-flex mb-2">
-                                    <span style={{ width: '30%' }} className="d-flex align-items-center">
-                                        <p>Jurusan</p>
-                                    </span>
-                                    <span style={{ width: '70%' }}>
-                                        <b>{item.jurusan || ''}</b>
-                                    </span>
-                                </section>
+                            <section key={index} className="d-flex ps-4 flex-column mb-4">
                                 <section className="d-flex mb-2">
                                     <span style={{ width: '30%' }} className="d-flex align-items-center">
                                         <p>Mata Kuliah</p>
                                     </span>
                                     <span style={{ width: '70%' }}>
-                                        <b>{item.matkul || ''}</b>
+                                        <p>{item.matkul || ''}</p>
                                     </span>
                                 </section>
                                 <section className="d-flex mb-2">
@@ -124,7 +96,7 @@ export default function DataMahasiswa() {
                                         <p>Jumlah SKS</p>
                                     </span>
                                     <span style={{ width: '70%' }}>
-                                        <b>{item.sks || ''}</b>
+                                        <p>{item.sks || ''}</p>
                                     </span>
                                 </section>
                                 <section className="d-flex mb-2">
@@ -132,7 +104,7 @@ export default function DataMahasiswa() {
                                         <p>Nilai</p>
                                     </span>
                                     <span style={{ width: '70%' }}>
-                                        <b>{item.nilai || ''}</b>
+                                        <p>{item.nilai || ''}</p>
                                     </span>
                                 </section>
                                 <section className="d-flex mb-2">
@@ -140,12 +112,12 @@ export default function DataMahasiswa() {
                                         <p>Jadwal</p>
                                     </span>
                                     <span style={{ width: '70%' }}>
-                                        <b>{item.jadwal || ''}</b>
+                                        <p>{item.jadwal || ''}</p>
                                     </span>
                                 </section>
+                                <hr style={{width: '50%'}} />
                             </section>
                         ))}
-                        <hr />
                     </div>
                 </div>
             </div>

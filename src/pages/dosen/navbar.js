@@ -18,7 +18,7 @@ export default function Navbar() {
                                 <Link class="nav-link active" aria-current="page" href="/dosen/">Edit Data Mahasiswa</Link>
                             </li>
                             <li>
-                                <Link class="nav-link bg-danger rounded" aria-current="page" href="/">Logout</Link>
+                                <Link class="nav-link bg-danger text-white rounded" aria-current="page" href="/">Logout</Link>
                             </li>
                         </ul>
                     </div>

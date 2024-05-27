@@ -12,7 +12,7 @@ export default function Navbar() {
                     <div class="collapse navbar-collapse justify-content-end pe-5" id="navbarNav">
                         <ul class="navbar-nav">
                             <li>
-                                <Link class="nav-link bg-danger rounded px-5 py-2" aria-current="page" href="/">Logout</Link>
+                                <Link class="nav-link bg-danger text-white rounded px-5 py-2" aria-current="page" href="/">Logout</Link>
                             </li>
                         </ul>
                     </div>
